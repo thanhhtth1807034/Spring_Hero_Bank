@@ -18,7 +18,7 @@ import sample.MainApplication;
 
 public class DepositStage extends Stage {
     private int amountValue;
-    private int accountBalance = 50000;
+    private int accountBalance;
 
     private MainApplication mainApplication;
     private GridPane gridPane;
@@ -35,7 +35,7 @@ public class DepositStage extends Stage {
     private Scene scene;
 
 
-    public DepositStage(MainApplication mainApplication){
+    public DepositStage(MainApplication mainApplication) {
         this.mainApplication = mainApplication;
         initComponent();
     }
@@ -117,7 +117,6 @@ public class DepositStage extends Stage {
     }
 
 
-
     public Button getBtnSubmit() {
         return btnSubmit;
     }
@@ -135,7 +134,6 @@ public class DepositStage extends Stage {
     }
 
 
-
     private void initComponent() {
         this.initModality(Modality.APPLICATION_MODAL);
         this.vBox = new VBox();
@@ -150,10 +148,10 @@ public class DepositStage extends Stage {
         this.gridPane = new GridPane();
         this.lblAmount = new Label("Amount");
         this.txtAmountValue = new TextField(String.valueOf(amountValue));
-        this.gridPane.add(this.lblAmount,0,0);
-        this.gridPane.add(this.txtAmountValue,1,0);
+        this.gridPane.add(this.lblAmount, 0, 0);
+        this.gridPane.add(this.txtAmountValue, 1, 0);
         this.gridPane.setAlignment(Pos.CENTER);
-        this.gridPane.setPadding(new Insets(10,10,10,10));
+        this.gridPane.setPadding(new Insets(10, 10, 10, 10));
         this.gridPane.setVgap(10);
         this.gridPane.setHgap(10);
 
@@ -169,17 +167,24 @@ public class DepositStage extends Stage {
         this.vBox.setSpacing(30);
         this.vBox.setPadding(new Insets(10));
 
-        this.scene = new Scene(this.vBox, 600,300);
+        this.scene = new Scene(this.vBox, 600, 300);
         this.setScene(this.scene);
 
         btnSubmit.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                int accountValue = Integer.parseInt(txtAmountValue.getText());
-                int balance = accountBalance + accountValue;
-                mainApplication.getLblBalanceValue().setText(String.valueOf(balance));
-                txtAmountValue.clear();
-                close();
+                int accountValue = 0;
+                try {
+                    accountValue = Integer.parseInt(txtAmountValue.getText());
+                    int balance = mainApplication.getAccountBalance() + accountValue;
+                    mainApplication.getLblBalanceValue().setText(String.valueOf(balance));
+                    mainApplication.setAccountBalance(balance);
+                    txtAmountValue.clear();
+                    close();
+                } catch (NumberFormatException ex) {
+                    ex.printStackTrace();
+                }
+
             }
         });
         btnClose.setOnAction(new EventHandler<ActionEvent>() {
@@ -192,5 +197,11 @@ public class DepositStage extends Stage {
 
     }
 
+    public int getAccountBalance() {
+        return accountBalance;
+    }
 
+    public void setAccountBalance(int accountBalance) {
+        this.accountBalance = accountBalance;
+    }
 }

@@ -16,16 +16,13 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
-import stage.ConfirmStage;
-import stage.WithdrawStage;
-import stage.DepositStage;
+import stage.*;
 
 
 public class MainApplication extends Application {
 
-
-    private String accountName = "Tatthanh";
-    private int accountBalance = 50000;
+    private String accountName;
+    private int accountBalance;
 
     private VBox vBox;
     private HBox titleBox;
@@ -44,18 +41,48 @@ public class MainApplication extends Application {
     private Stage mainStage;
     private WithdrawStage withdrawStage;
     private DepositStage depositStage;
-    private MainApplication mainApplication;
+    private LoginStage loginStage;
+    private RegisterStage registerStage;
+
+    private MainApplication mainApplication;//luư địa chỉ bộ nhớ
+
+    private static boolean isLoggedIn = false;
+    private static boolean isRegistered = false;
 
     @Override
     public void start(Stage primaryStage) throws Exception {
         this.mainApplication = this;
         this.mainStage = primaryStage;
+
+
+        initComponent();
+
+
+        if (isLoggedIn) {
+            // show stage.
+            this.mainStage.show();
+        } else {
+            this.loginStage = new LoginStage(this);
+            this.loginStage.show();
+        }
+
+        if (isRegistered) {
+            this.loginStage.show();
+        } else {
+//            this.registerStage = new RegisterStage(this);
+//            this.registerStage.show();
+        }
+
+
+    }
+
+    private void initComponent() {
         this.vBox = new VBox();
 
         this.titleBox = new HBox();
         this.lblTitle = new Label("Spring Hero Bank");
         this.lblTitle.setFont(Font.font(18));
-        this.lblTitle.setTextFill(Color.web("#f9e70a"));
+        this.lblTitle.setTextFill(Color.web("#ff0cb4"));
         this.titleBox.getChildren().add(lblTitle);
         this.titleBox.setAlignment(Pos.TOP_LEFT);
         this.titleBox.setSpacing(10);
@@ -70,7 +97,7 @@ public class MainApplication extends Application {
         this.gridPaneContent.add(this.lblBalance, 0, 1);
         this.gridPaneContent.add(this.lblBalanceValue, 1, 1);
         this.gridPaneContent.setAlignment(Pos.CENTER);
-        this.gridPaneContent.setPadding(new Insets(10, 10, 10, 10));
+        this.gridPaneContent.setPadding(new Insets(10));
         this.gridPaneContent.setVgap(10);
         this.gridPaneContent.setHgap(10);
 
@@ -86,15 +113,10 @@ public class MainApplication extends Application {
         this.vBox.setSpacing(30);
         this.vBox.setPadding(new Insets(10, 10, 10, 10));
 
-        initComponent();
-
         this.scene = new Scene(this.vBox, 300, 200);
         this.mainStage.setScene(this.scene);
-        this.mainStage.show();
 
-    }
 
-    private void initComponent() {
         this.withdrawStage = new WithdrawStage(mainApplication);
         this.depositStage = new DepositStage(mainApplication);
 
@@ -245,5 +267,53 @@ public class MainApplication extends Application {
 
     public void setMainApplication(MainApplication mainApplication) {
         this.mainApplication = mainApplication;
+    }
+
+    public WithdrawStage getWithdrawStage() {
+        return withdrawStage;
+    }
+
+    public void setWithdrawStage(WithdrawStage withdrawStage) {
+        this.withdrawStage = withdrawStage;
+    }
+
+    public DepositStage getDepositStage() {
+        return depositStage;
+    }
+
+    public void setDepositStage(DepositStage depositStage) {
+        this.depositStage = depositStage;
+    }
+
+    public LoginStage getLoginStage() {
+        return loginStage;
+    }
+
+    public void setLoginStage(LoginStage loginStage) {
+        this.loginStage = loginStage;
+    }
+
+    public static boolean isIsLoggedIn() {
+        return isLoggedIn;
+    }
+
+    public static void setIsLoggedIn(boolean isLoggedIn) {
+        MainApplication.isLoggedIn = isLoggedIn;
+    }
+
+    public RegisterStage getRegisterStage() {
+        return registerStage;
+    }
+
+    public void setRegisterStage(RegisterStage registerStage) {
+        this.registerStage = registerStage;
+    }
+
+    public static boolean isIsRegistered() {
+        return isRegistered;
+    }
+
+    public static void setIsRegistered(boolean isRegistered) {
+        MainApplication.isRegistered = isRegistered;
     }
 }

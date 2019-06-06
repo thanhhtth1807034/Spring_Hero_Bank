@@ -16,11 +16,9 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import sample.MainApplication;
 
-import javax.security.auth.callback.ConfirmationCallback;
-
 public class WithdrawStage extends Stage {
     private int amountValue;
-    private int accountBalance = 50000;
+    private int accountBalance;
     private Label lblBalanceValue;
 
     private MainApplication mainApplication;
@@ -43,6 +41,68 @@ public class WithdrawStage extends Stage {
         initComponent();
     }
 
+    private void initComponent() {
+        this.initModality(Modality.APPLICATION_MODAL);
+        this.vBox = new VBox();
+
+        this.titleBox = new HBox();
+        this.lbltitle = new Label("Withdraw");
+        this.lbltitle.setFont(Font.font(18));
+        this.titleBox.getChildren().add(lbltitle);
+        this.titleBox.setAlignment(Pos.CENTER);
+        this.titleBox.setSpacing(10);
+
+        this.gridPane = new GridPane();
+        this.lblAmount = new Label("Amount");
+        this.txtAmountValue = new TextField(String.valueOf(amountValue));
+        this.gridPane.add(this.lblAmount, 0, 0);
+        this.gridPane.add(this.txtAmountValue, 1, 0);
+        this.gridPane.setAlignment(Pos.CENTER);
+        this.gridPane.setPadding(new Insets(10, 10, 10, 10));
+        this.gridPane.setVgap(10);
+        this.gridPane.setHgap(10);
+
+        this.btnBox = new HBox();
+        this.btnSubmit = new Button("Submit");
+        this.btnClose = new Button("Close");
+        this.btnBox.getChildren().addAll(this.btnSubmit, this.btnClose);
+        this.btnBox.setAlignment(Pos.CENTER);
+        this.btnBox.setSpacing(10);
+
+        this.vBox.getChildren().addAll(this.titleBox, this.gridPane, this.btnBox);
+        this.vBox.setAlignment(Pos.CENTER);
+        this.vBox.setSpacing(30);
+        this.vBox.setPadding(new Insets(10));
+
+        this.scene = new Scene(this.vBox, 600, 300);
+        this.setScene(this.scene);
+
+        btnSubmit.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                int accountValue = 0;
+                try {
+                    accountValue = Integer.parseInt(txtAmountValue.getText());
+                    int balance = mainApplication.getAccountBalance() - accountValue;
+                    mainApplication.getLblBalanceValue().setText(String.valueOf(balance));
+                    mainApplication.setAccountBalance(balance);
+                    txtAmountValue.clear();
+                    close();
+                } catch (NumberFormatException ex) {
+                    ex.getMessage();
+                }
+
+            }
+        });
+        btnClose.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                Boolean answer = ConfirmStage.display("Title", "Sure you want to exit?");
+                if (answer) close();
+            }
+        });
+
+    }
 
     public int getAmountValue() {
         return amountValue;
@@ -147,63 +207,4 @@ public class WithdrawStage extends Stage {
     public void setBtnClose(Button btnClose) {
         this.btnClose = btnClose;
     }
-
-
-    private void initComponent() {
-        this.initModality(Modality.APPLICATION_MODAL);
-        this.vBox = new VBox();
-
-        this.titleBox = new HBox();
-        this.lbltitle = new Label("Withdraw");
-        this.lbltitle.setFont(Font.font(18));
-        this.titleBox.getChildren().add(lbltitle);
-        this.titleBox.setAlignment(Pos.CENTER);
-        this.titleBox.setSpacing(10);
-
-        this.gridPane = new GridPane();
-        this.lblAmount = new Label("Amount");
-        this.txtAmountValue = new TextField(String.valueOf(amountValue));
-        this.gridPane.add(this.lblAmount, 0, 0);
-        this.gridPane.add(this.txtAmountValue, 1, 0);
-        this.gridPane.setAlignment(Pos.CENTER);
-        this.gridPane.setPadding(new Insets(10, 10, 10, 10));
-        this.gridPane.setVgap(10);
-        this.gridPane.setHgap(10);
-
-        this.btnBox = new HBox();
-        this.btnSubmit = new Button("Submit");
-        this.btnClose = new Button("Close");
-        this.btnBox.getChildren().addAll(this.btnSubmit, this.btnClose);
-        this.btnBox.setAlignment(Pos.CENTER);
-        this.btnBox.setSpacing(10);
-
-        this.vBox.getChildren().addAll(this.titleBox, this.gridPane, this.btnBox);
-        this.vBox.setAlignment(Pos.CENTER);
-        this.vBox.setSpacing(30);
-        this.vBox.setPadding(new Insets(10));
-
-        this.scene = new Scene(this.vBox, 600, 300);
-        this.setScene(this.scene);
-
-        btnSubmit.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                int accountValue = Integer.parseInt(txtAmountValue.getText());
-                int balance = accountBalance - accountValue;
-                mainApplication.getLblBalanceValue().setText(String.valueOf(balance));
-                txtAmountValue.clear();
-                close();
-            }
-        });
-        btnClose.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                Boolean answer = ConfirmStage.display("Title", "Sure you want to exit?");
-                if (answer) close();
-            }
-        });
-
-    }
-
-
 }
